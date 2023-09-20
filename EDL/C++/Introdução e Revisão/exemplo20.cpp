@@ -33,5 +33,7 @@ int main() {
     float novaArea = ptrRetangulo->calcularArea();
 
     cout << area << " ," << novaArea << endl;
+
+    delete ptrRetangulo;
 return 0;
 }

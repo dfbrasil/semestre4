@@ -34,6 +34,9 @@ int main() {
     for (int i = 0; i < 3; i++){
         cout << pontos[i]->get_x() << pontos[i]->get_y() << endl;
     }
+
+    delete pontos;
+
 return 0;
 
 }

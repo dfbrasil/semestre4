@@ -22,6 +22,5 @@ int main(){
     delete elemento_ptr;
 
     return 0;
-
 }
 
