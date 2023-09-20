@@ -13,33 +13,33 @@ class ListaEncadeada {
 public:
     ListaEncadeada() : head(nullptr), tamanho(0) {};
 
-    void adicionarElemento(int numero){
+    void adicionarElemento(int numero) {
         Node* novoNode = new Node(numero);
         novoNode->proximo = head;
         head = novoNode;
         tamanho++;
     }
     
-    void exibirLista(){
+    void exibirLista() {
         Node* atual = head;
-        while(atual != nullptr){
-            cout << atual->numero;
+        while(atual != nullptr) {
+            cout << atual->numero << " ";
             atual = atual->proximo;
         }
+        cout << endl;
     }
 
-    void mostrarTamanho(){
-        cout << "Tamanho da lista " << endl;
-        cout << tamanho << endl;
+    void mostrarTamanho() {
+        cout << "Tamanho da lista: " << tamanho << endl;
     }
 
-    bool removerElemento(int valor){
-        if (head == nullptr){
+    bool removerElemento(int valor) {
+        if (head == nullptr) {
             cout << "A lista está vazia, não há o que remover" << endl;
             return false;
         }
 
-        if (head->numero == valor){
+        if (head->numero == valor) {
             Node* temp = head;
             head = head->proximo;
             delete temp;
@@ -48,8 +48,8 @@ public:
         } 
         
         Node* atual = head;
-        while(atual->proximo != nullptr){
-            if (atual->proximo->numero == valor){
+        while(atual->proximo != nullptr) {
+            if (atual->proximo->numero == valor) {
                 Node* temp = atual->proximo;
                 atual->proximo = atual->proximo->proximo;
                 delete temp;
@@ -58,27 +58,28 @@ public:
             }
             atual = atual->proximo;
         }
-        cout<< "elemento não na lista";
+        cout << "Elemento não encontrado na lista" << endl;
         return false;
-        
     }
 
-    void inserirElemento(int valor, int posicao){
-        if (posicao < 0 || posicao > tamanho){
+    void inserirElemento(int valor, int posicao) {
+        if (posicao < 0 || posicao > tamanho) {
             cout << "Posição inválida!" << endl;
+            return;
         }
 
         Node* novoNode = new Node(valor);
 
-        if (posicao == 0){
+        if (posicao == 0) {
             novoNode->proximo = head;
             head = novoNode;
             tamanho++;
+            return;
         }
 
         Node* anterior = head;
 
-        for (int i = 0; i < posicao - 1; i++){
+        for (int i = 0; i < posicao - 1; i++) {
             anterior = anterior->proximo;
         }
 
@@ -87,15 +88,15 @@ public:
         tamanho++;
     }
     
-    int obterElemento(int posicao){
-        if (posicao >= tamanho || head == nullptr || posicao < 0){
-            cout << "posição inválida! " << endl;
+    int obterElemento(int posicao) {
+        if (posicao >= tamanho || head == nullptr || posicao < 0) {
+            cout << "Posição inválida!" << endl;
+            return -1;
         }
 
         Node* atual = head;
 
-        for (int i = 0; i < posicao; i++){
-
+        for (int i = 0; i < posicao; i++) {
             atual = atual->proximo;
         }
         return atual->numero;
@@ -109,7 +110,6 @@ private:
 int main() {
     ListaEncadeada lista;
 
-
     lista.adicionarElemento(10);
     lista.adicionarElemento(20);
     lista.adicionarElemento(30);
@@ -120,15 +120,16 @@ int main() {
     cout << endl;
     lista.mostrarTamanho();
     cout << endl;
-    lista.inserirElemento(12,9);
+    lista.inserirElemento(12, 9); // Teste com posição inválida
     cout << endl;
     lista.exibirLista();
     cout << endl;
-    lista.removerElemento(15);
+    lista.removerElemento(15); // Teste com elemento não encontrado
     cout << endl;
     lista.exibirLista();
     cout << endl;
-    cout << lista.obterElemento(8);
+    cout << lista.obterElemento(8); // Teste com posição inválida
     cout << endl;
+
     return 0;
 }
