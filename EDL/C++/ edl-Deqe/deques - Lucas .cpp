@@ -18,7 +18,7 @@ class Deque {
         Node* head;
         Node* tail;
 
-        Deque() : tamanho_deque(0), head(nullptr), tail(nullptr) {}
+        Deque() : tamanho_deque(0), head(nullptr), tail(nullptr) {
 
         Deque inic_deque() {
             Deque deque;

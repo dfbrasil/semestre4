@@ -161,11 +161,11 @@ int main() {
     cout << endl;
     lista.exibirLista();
     cout << endl;
-    lista.removerElemento(15); // Teste com elemento não encontrado
+    lista.removerElemento(12); // Teste com elemento não encontrado
     cout << endl;
     lista.exibirLista();
     cout << endl;
-    cout << lista.obterElemento(8); // Teste com posição inválida
+    cout << lista.obterElemento(2); // Teste com posição inválida
     cout << endl;
 
     return 0;
