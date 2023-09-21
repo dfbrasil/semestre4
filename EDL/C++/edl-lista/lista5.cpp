@@ -102,6 +102,43 @@ public:
         return atual->numero;
     }
 
+    void desalocarLista(){
+        Node* atual = head;
+
+        while (atual){
+            Node* temp = atual;
+            atual = atual->proximo;
+            delete temp;
+        }
+        head = nullptr;
+    }
+
+    bool removerElementoNaPosicao(int posicao) {
+    if (posicao < 0 || posicao >= tamanho || head == nullptr) {
+        cout << "Posição inválida!" << endl;
+        return false;
+    }
+
+    if (posicao == 0) {
+        Node* temp = head;
+        head = head->proximo;
+        delete temp;
+        tamanho--;
+        return true;
+    }
+
+    Node* anterior = head;
+    for (int i = 0; i < posicao - 1; i++) {
+        anterior = anterior->proximo;
+    }
+
+    Node* temp = anterior->proximo;
+    anterior->proximo = temp->proximo;
+    delete temp;
+    tamanho--;
+    return true;
+}
+
 private:
     Node* head;
     int tamanho;
