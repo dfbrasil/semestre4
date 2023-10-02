@@ -53,6 +53,7 @@ public:
         Node* atual = head;
         cout << atual->numero << endl;
     }
+    
 
     void ultimo(){
         Node* atual = head;

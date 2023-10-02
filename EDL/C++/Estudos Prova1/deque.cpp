@@ -106,5 +106,19 @@ int main(){
 
     deque.imprimir();
 
+    deque.remover_first();
+
+    cout << endl;
+
+    deque.imprimir();
+
+    deque.remover_last();
+
+    cout << endl;
+
+    deque.imprimir();
+
+
+
 return 0;
 }
