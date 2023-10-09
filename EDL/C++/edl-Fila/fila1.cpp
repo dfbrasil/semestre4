@@ -74,14 +74,17 @@ int main(){
     fila.inserir(4);
 
     fila.imprimir();
+    cout << "\n\n";
 
     fila.excluir();
 
     fila.imprimir();
+    cout << "\n\n";
 
     fila.excluir();
 
     fila.imprimir();
+    cout << "\n\n";
 
     fila.ultimo();
 

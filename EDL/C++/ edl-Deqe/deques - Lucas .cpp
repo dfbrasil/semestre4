@@ -18,7 +18,7 @@ class Deque {
         Node* head;
         Node* tail;
 
-        Deque() : tamanho_deque(0), head(nullptr), tail(nullptr) {
+        Deque() : tamanho_deque(0), head(nullptr), tail(nullptr) {}
 
         Deque inic_deque() {
             Deque deque;
@@ -55,7 +55,8 @@ class Deque {
                 head = new_node; // A
                 tail = new_node; // A
 
-            } else if (tamanho_deque == 1) {
+            } 
+            else if (tamanho_deque == 1) {
 
                 head->proximo = new_node; // A -> B
                 new_node->anterior = head; // A <- B
@@ -63,7 +64,8 @@ class Deque {
                 head = new_node->anterior; // A
                 tail = new_node; // B
 
-            }  else {
+            }  
+            else {
                 
                 tail->proximo = new_node; // B -> C
                 new_node->anterior = tail; //B <- C
@@ -115,8 +117,15 @@ class Deque {
         return false;
     }
 
+    void imprimir(){
+        Node* atual = head;
+        while(atual != nullptr){
+            cout << atual->letra << endl;
+            atual = atual->proximo;
+        }
+    }
+
 };
-}
 
 int main() {
 
@@ -134,6 +143,9 @@ int main() {
 
     // Inserir no final
     deque.inserir_last('W');
+
+    deque.imprimir();
+    cout << "\n\n";
 
     // Está vazia?
     cout << "deque vazio? " << deque.is_empty() << endl;
@@ -153,6 +165,9 @@ int main() {
     deque.inserir_last('X');
     deque.inserir_last('Y');
 
+    deque.imprimir();
+    cout << "\n\n";
+
     cout << "tamanho do deque: " << deque.size() << endl;
     cout << "head: " << deque.first() << endl;
     cout << "tail: " << deque.last() << endl;
@@ -165,6 +180,9 @@ int main() {
     // Remover no final
     deque.remover_last();
 
+    deque.imprimir();
+    cout << "\n\n";
+
     cout << "tamanho do deque: " << deque.size() << endl;
     cout << "head: " << deque.first() << endl;
     cout << "tail: " << deque.last() << endl;
@@ -176,6 +194,9 @@ int main() {
 
     // Inserir no final
     deque.inserir_last('Z');
+
+    deque.imprimir();
+    cout << "\n\n";
 
     cout << "tamanho do deque: " << deque.size() << endl;
     cout << "head: " << deque.first() << endl;
