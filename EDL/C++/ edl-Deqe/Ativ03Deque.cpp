@@ -18,7 +18,7 @@ public:
     void inserir_inicio(int numero){
         Node* newNode = new Node(numero);
 
-         if (head == nullptr){
+        if (head == nullptr){
             head = tail = newNode;
         } else {
             head->anterior = newNode;

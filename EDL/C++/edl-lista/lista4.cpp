@@ -53,6 +53,8 @@ int main() {
     lista.adicionarElemento(10);
     lista.adicionarElemento(20);
     lista.adicionarElemento(30);
+    lista.adicionarElemento(40);
+    lista.adicionarElemento(50);
 
     // Exiba a lista original
     cout << "Lista Original: ";
