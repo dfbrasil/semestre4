@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int Interations(long long n) {
+int Interations(long n) {
     int iteracoes = 0;
     
     while (n != 1) {
@@ -20,7 +20,7 @@ int main() {
     long long menorNumero = 1;
     int maxIteracoes = 0;
 
-    for (long long numero = 1; numero < 999999; numero++) {
+    for (long numero = 1; numero < 999999; numero++) {
         int iteracoes = Interations(numero);
         if (iteracoes > maxIteracoes) {
             maxIteracoes = iteracoes;
