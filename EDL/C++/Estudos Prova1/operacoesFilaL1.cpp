@@ -74,6 +74,31 @@ public:
         last = nullptr;
     }
 
+    void removerRepetidos() {
+    if (head == nullptr || head->proximo == nullptr) {
+        return;
+    }
+
+    Node* atual = head;
+
+    while (atual != nullptr) {
+        Node* comparador = atual;
+        while (comparador->proximo != nullptr) {
+            if (comparador->proximo->numero == atual->numero) {
+                // Elemento repetido encontrado, remova-o.
+                Node* temp = comparador->proximo;
+                comparador->proximo = temp->proximo;
+                delete temp;
+                cont--;
+            } else {
+                comparador = comparador->proximo;
+            }
+        }
+        atual = atual->proximo;
+    }
+}
+
+
 private:
     Node* head;
     Node* last;
@@ -87,6 +112,7 @@ int main(){
     fila.inserir(2);
     fila.inserir(3);
     fila.inserir(4);
+    fila.inserir(4);
 
     fila.imprimir();
 
@@ -97,6 +123,9 @@ int main(){
     fila.primeiro();
 
     fila.ultimo();
+
+    fila.removerRepetidos();
+    fila.imprimir();
 
 
     return 0;
