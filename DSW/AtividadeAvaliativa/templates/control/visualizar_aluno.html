@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <h1>Visualizar aluno</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nome</th>
+                <td>{{ aluno.nome }}</td>
+            </tr>
+            <tr>
+                <th>Idade</th>
+                <td>{{ aluno.idade }}</td>
+            </tr>
+            <tr>
+                <th>E-mail</th>
+                <td>{{ aluno.email }}</td>
+            </tr>
+            <tr>
+                <th>Cidade</th>
+                <td>{{ aluno.cidade }}</td>
+            </tr>
+            <tr>
+                <th>Curso</th>
+                <td>{{ aluno.curso }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{% url 'editar_aluno' aluno.id %}">Editar</a>
+    <a href="{% url 'excluir_aluno' aluno.id %}">Excluir</a>
+{% endblock %}
