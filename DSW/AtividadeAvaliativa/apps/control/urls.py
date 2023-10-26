@@ -4,6 +4,8 @@ from .views.cadastrar import cadastrar_aluno
 from .views.listar import listar_alunos
 from .views.pesquisar import pesquisar_alunos
 from .views.visualizar import visualizar_aluno
+from .views.editar import editar_aluno
+from .views.excluir import excluir_aluno
 
 urlpatterns = [
     path('', listar_alunos, name='listar_alunos'),
