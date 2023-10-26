@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Pesquisa de alunos</h1>
+
+    <p>Resultados da pesquisa por "{{ pesquisa }}"</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>E-mail</th>
+                <th>Cidade</th>
+                <th>Curso</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in alunos %}
+                <tr>
+                    <td>{{ aluno.nome }}</td>
+                    <td>{{ aluno.idade }}</td>
+                    <td>{{ aluno.email }}</td>
+                    <td>{{ aluno.cidade }}</td>
+                    <td>{{ aluno.curso }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
