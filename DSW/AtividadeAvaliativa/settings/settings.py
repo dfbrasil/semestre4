@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     
     #Apps
     'apps.core',
-    'apps.disk',
+    'apps.control',
 ]
 
 MIDDLEWARE = [
