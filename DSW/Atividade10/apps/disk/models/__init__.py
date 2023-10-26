@@ -1,4 +1,4 @@
-from .disk import Disk
+from .album import Disk
 from .artist import Artist
 from .stamp import Stamp
 

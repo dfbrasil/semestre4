@@ -1,6 +1,5 @@
 from django.db import models
-from django.apps import apps
-from .disk import Disk
+from .album import Disk
 
 
 class Artist(models.Model):

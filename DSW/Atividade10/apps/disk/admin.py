@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models.disk import Disk
+from .models.album import Disk
 from .models.artist import Artist
 from .models.stamp import Stamp
 
