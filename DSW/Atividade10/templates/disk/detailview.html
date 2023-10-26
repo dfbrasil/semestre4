@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Detalhes do Álbum</h1>
+    <h2>Nome do Álbum: {{ disk.name }}</h2>
+
+    <h3>Artistas:</h3>
+    <ul>
+        {% for artist in artists %}
+            <li>{{ artist.artist_name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Selo Fonográfico: {{ stamp.stamp }}</h3>
+</body>
+</html>
