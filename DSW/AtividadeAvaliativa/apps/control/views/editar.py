@@ -20,3 +20,4 @@ def editar_aluno(request, id):
     }
 
     return render(request, 'control/editar_aluno.html', context)
+
