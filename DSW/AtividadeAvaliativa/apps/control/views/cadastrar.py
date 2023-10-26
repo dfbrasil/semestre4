@@ -5,7 +5,7 @@ from apps.control.models.aluno import Aluno
 class AlunoForm(ModelForm):
     class Meta:
         model = Aluno
-        fields = ['nome', 'endereco', 'email', 'data_nascimento', 'curso']
+        fields = ['nome', 'endereco', 'email', 'data_nascimento', 'curso', 'cidade']
 
 def cadastrar_aluno(request):
     if request.method == 'POST':
@@ -15,6 +15,6 @@ def cadastrar_aluno(request):
             return redirect('listar_alunos')
     else:
         form = AlunoForm()
-    return render(request, 'alunos/cadastrar_aluno.html', {
+    return render(request, 'control/cadastrar_aluno.html', {
         'form': form,
     })
