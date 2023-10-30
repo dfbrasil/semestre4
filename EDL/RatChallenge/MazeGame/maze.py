@@ -7,7 +7,7 @@ pygame.init()
 
 pygame.display.set_caption('Maze Hunter')
 
-Icon = pygame.image.load('MazeGame/images/rat.png')
+Icon = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
 
 pygame.display.set_icon(Icon)
 
@@ -23,18 +23,28 @@ color = (0, 0, 0)
 clock = pygame.time.Clock()
  
 # Load image
-image = pygame.image.load('rat.png')
+ratImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
+cheeseImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/cheese.png')
  
 # Set the size for the image
-DEFAULT_IMAGE_SIZE = (40, 40)
+RAT_IMAGE_SIZE = (40, 40)
+
+CHEESE_IMAGE_SIZE = (40, 40)
  
 # Scale the image to your needed size
-image = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
+ratImage = pygame.transform.scale(ratImage, RAT_IMAGE_SIZE)
+
+cheeseImage = pygame.transform.scale(cheeseImage, CHEESE_IMAGE_SIZE)
  
-posX = 0
-posY = 0
+posRatX = 0
+posRatY = 0
 # Set a default position
-DEFAULT_IMAGE_POSITION = (posX,posY)
+RAT_POSITION = (posRatX,posRatY)
+
+posCheeseX = 500
+posCheeseY = 500
+# Set a default position
+CHEESE_POSITION = (posCheeseX,posCheeseY)
  
 # Prepare loop condition
 running = True
@@ -42,27 +52,48 @@ running = True
 print(size)
 
 pygame.time.wait(1000)
- 
+
 # Event loop
 while running:
     
-    pygame.time.wait(100)
+    pygame.draw.rect(screen, (0, 0, 255), 
+                 [20, 20, 560, 560], 5)
     
-    posX = posX + 1
-    posY = posY + 1
+    pygame.draw.line(screen, (0, 0, 255), 
+                 [100, 300], 
+                 [500, 300], 5)
     
-    if posX == 600:
-        posX = 0
+    pygame.draw.line(screen, (0, 0, 255), 
+                 [300, 30], 
+                 [300, 570], 5)
+
+    pygame.display.update()
     
-    if posY == 600:
-        posY = 0
+    pygame.time.wait(10)
     
-    DEFAULT_IMAGE_POSITION = (posX,posY)
+    posRatX = posRatX + 1
+    posRatY = posRatY + 1
+    
+    if posRatX == 600:
+        posRatX = 0
+    
+    if posRatY == 600:
+        posRatY = 0
+    
+    RAT_POSITION = (posRatX,posRatY)
+    
+    CHEESE_POSITION = (posCheeseX,posCheeseY)
  
     # Close window event
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
+    # if(color == "black"):
+    #     color = "blue"
+         
+    # else:
+    #     color = "black"
  
     
     # Changing surface color
@@ -70,8 +101,10 @@ while running:
     # pygame.display.flip()
     
     # Show the image
-    screen.blit(image, DEFAULT_IMAGE_POSITION)
+    screen.blit(ratImage, RAT_POSITION)
+    
+    screen.blit(cheeseImage, CHEESE_POSITION)
  
     # Part of event loop
-    pygame.display.flip()
-    clock.tick(30)
+    # pygame.display.flip()
+    # clock.tick(30)
