@@ -1,4 +1,10 @@
 from django.shortcuts import render
 
+from apps.disk.models.album import Disk
+
 def IndexView(request):
-    return render(request, 'core/index.html')
+    
+    disks = Disk.objects.all()
+
+    return render(request, 'disk/listview.html', {'disks': disks})
+

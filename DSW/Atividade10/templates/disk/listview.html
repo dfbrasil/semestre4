@@ -1,17 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <ul>
-        {% for disk in disks %}
-        <li>
-            {{disk.disk_name}}
-        </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <h1>Discos</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Gênero</th>
+                <th>Ano de lançamento</th>
+                <th>País</th>
+                <th>Selo fonográfico</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for disk in disks %}
+                <tr>
+                    <td><a href="{% url 'read' disk.id %}">{{ disk.disk_name }}</a></td>
+                    <td>{{ disk.genre }}</td>
+                    <td>{{ disk.year }}</td>
+                    <td>{{ disk.country }}</td>
+                    <td>{{ disk.stamp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
