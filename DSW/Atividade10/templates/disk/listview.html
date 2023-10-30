@@ -9,8 +9,7 @@
                 <th>Nome</th>
                 <th>Gênero</th>
                 <th>Ano de lançamento</th>
-                <th>País</th>
-                <th>Selo fonográfico</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -19,8 +18,10 @@
                     <td><a href="{% url 'read' disk.id %}">{{ disk.disk_name }}</a></td>
                     <td>{{ disk.genre }}</td>
                     <td>{{ disk.year }}</td>
-                    <td>{{ disk.country }}</td>
-                    <td>{{ disk.stamp }}</td>
+                    <td>
+                        <a href="{% url 'edit' disk.id %}" class="btn btn-primary">Editar</a>
+                        <a href="{% url 'delete' disk.id %}" class="btn btn-danger">Excluir</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
