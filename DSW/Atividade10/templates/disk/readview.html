@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <h1>Visualizar disco</h1>
+
+    <table>
+        <tbody>
+            {% for disk in disks %}
+                <tr>
+                    <th>Nome</th>
+                    <td>{{ disk.disk_name }}</td>
+                </tr>
+                <tr>
+                    <th>Descrição</th>
+                    <td>{{ disk.description }}</td>
+                </tr>
+                <tr>
+                    <th>Selo</th>
+                    <td>{{ disk.stamp }}</td>
+                </tr>
+                <tr>
+                    <th>Ano</th>
+                    <td>{{ disk.year }}</td>
+                </tr>
+                <tr>
+                    <th>País</th>
+                    <td>{{ disk.country }}</td>
+                </tr>
+                <tr>
+                    <th>Gênero</th>
+                    <td>{{ disk.genre }}</td>
+                </tr>
+                <tr>
+                    <th>Quantidade</th>
+                    <td>{{ disk.quantity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

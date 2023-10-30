@@ -19,20 +19,18 @@
     <br>
 
     <label for="data_nascimento">Data de Nascimento:</label>
-    <input type="date" name="data_nascimento" value="{{ aluno.data_nascimento }}" required>
+    <input type="date" name="data_nascimento" value="{{ aluno.data_nascimento|date:'Y-m-d' }}" required>
     <br>
 
     <label for="curso">Curso:</label>
     <select name="curso">
       <option value="{{ aluno.curso.id }}" selected>{{ aluno.curso.nome }}</option>
-      <!-- Inclua outras opções de cursos aqui, se necessário -->
     </select>
     <br>
 
     <label for="cidade">Cidade:</label>
     <select name="cidade">
       <option value="{{ aluno.cidade.id }}" selected>{{ aluno.cidade.nome }}</option>
-      <!-- Inclua outras opções de cidades aqui, se necessário -->
     </select>
     <br>
 

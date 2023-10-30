@@ -1,5 +1,9 @@
-from .listview import DiskListView
+from .listview import list_disk
+from .detailview import detail_disk
+from .readview import read_disk
 
 __all__ = [
-    DiskListView,
+    list_disk,
+    detail_disk,
+    read_disk,
 ]

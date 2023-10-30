@@ -3,13 +3,13 @@ from apps.disk.models.artist import Artist
 from apps.disk.models.album import Disk
 from apps.disk.models.stamp import Stamp
 
-def DetailDiskView(request, disk_id):
+def detail_disk(request, disk_id):
     
     disk = Disk.objects.get(id=disk_id)
 
-    artists = Artist.objects.filter(albums=disk)
+    artists = Artist.objects.filter(artist_name=disk)
 
-    stamp = disk.stamp
+    stamp = Stamp.objects.filter(stamp=disk)
     
     context = {
         'disk': disk,
