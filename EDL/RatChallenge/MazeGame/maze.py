@@ -1,6 +1,22 @@
 
 # Import pygame
 import pygame
+
+n = 10
+m = 10
+
+maze = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 0, 1, 0, 0, 0, 0, 1, 1],
+    [1, 1, 0, 1, 0, 1, 1, 1, 1, 1],
+    [1, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+    [1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
+    [1, 1, 1, 0, 0, 1, 1, 0, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+]
  
 # Initialise pygame
 pygame.init()
@@ -52,42 +68,86 @@ running = True
 print(size)
 
 pygame.time.wait(1000)
+pixels = 12
 
 # Event loop
 while running:
+     
+    # Filling the background with 
+    # white color 
+    screen.fill((255, 255, 255)) 
+  
+    # Display the player sprite at x 
+    # and y coordinates 
+    screen.blit(ratImage, (posRatX, posRatY))
     
-    pygame.draw.rect(screen, (0, 0, 255), 
-                 [20, 20, 560, 560], 5)
-    
-    pygame.draw.line(screen, (0, 0, 255), 
-                 [100, 300], 
-                 [500, 300], 5)
-    
-    pygame.draw.line(screen, (0, 0, 255), 
-                 [300, 30], 
-                 [300, 570], 5)
+    screen.blit(cheeseImage, (posCheeseX, posCheeseY))
+  
+    # iterate over the list of Event objects 
+    # that was returned by pygame.event.get() 
+    # method. 
+    for event in pygame.event.get(): 
+  
+        # Closing the screen and program if the 
+        # type of the event is QUIT 
+        if event.type == pygame.QUIT: 
+            run = False
+            pygame.quit() 
+            quit() 
+  
+        # Checking event key if the type 
+        # of the event is KEYDOWN i.e. 
+        # keyboard button is pressed 
+        if event.type == pygame.KEYDOWN: 
+  
+            # Decreasing the x coordinate 
+            # if the button pressed is 
+            # Left arrow key 
+            if event.key == pygame.K_LEFT: 
+                posRatX -= pixels 
+  
+            # Increasing the posRatX coordinate 
+            # if the button pressed is 
+            # Right arrow key 
+            if event.key == pygame.K_RIGHT: 
+                posRatX += pixels 
+  
+            # Decreasing the y coordinate 
+            # if the button pressed is 
+            # Up arrow key 
+            if event.key == pygame.K_UP: 
+                posRatY -= pixels 
+  
+            # Increasing the y coordinate 
+            # if the button pressed is 
+            # Down arrow key 
+            if event.key == pygame.K_DOWN: 
+                posRatY += pixels 
+  
+        # Draws the surface object to the screen. 
+    pygame.display.update() 
 
-    pygame.display.update()
+    # pygame.display.update()
     
-    pygame.time.wait(10)
+    # pygame.time.wait(10)
     
-    posRatX = posRatX + 1
-    posRatY = posRatY + 1
+    # posRatX = posRatX + 1
+    # posRatY = posRatY + 1
     
-    if posRatX == 600:
-        posRatX = 0
+    # if posRatX == 600:
+    #     posRatX = 0
     
-    if posRatY == 600:
-        posRatY = 0
+    # if posRatY == 600:
+    #     posRatY = 0
     
-    RAT_POSITION = (posRatX,posRatY)
+    # RAT_POSITION = (posRatX,posRatY)
     
     CHEESE_POSITION = (posCheeseX,posCheeseY)
  
-    # Close window event
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    # # Close screen event
+    # for event in pygame.event.get():
+    #     if event.type == pygame.QUIT:
+    #         running = False
             
     # if(color == "black"):
     #     color = "blue"
