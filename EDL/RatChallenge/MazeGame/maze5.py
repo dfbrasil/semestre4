@@ -2,7 +2,6 @@ import pygame
 import time
 from collections import deque
 
-
 pygame.init()
 
 def load_maze_from_file(filename):
@@ -73,27 +72,68 @@ CHEESE_POSITION = (posCheeseX, posCheeseY)
 
 running = True
 
-pygame.time.wait(1000)
+pygame.time.wait(100)
 pixels = cell_size  # Tamanho do movimento baseado na célula
 
-def move_rat(maze, posRatX, posRatY):
+def move_rat(maze, posRatX, posRatY, last_direction):
     # Lógica para mover o rato automaticamente
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    possible_moves = []
     
     for dx, dy in directions:
         new_x = posRatX + dx * cell_size
         new_y = posRatY + dy * cell_size
-        if 0 <= new_x < width - RAT_IMAGE_SIZE[0] and 0 <= new_y < height - RAT_IMAGE_SIZE[1] and maze[new_y // cell_size][new_x // cell_size] == 0:
-            return new_x, new_y  # Movimento possível
+        
+        # Verifique se o movimento é válido (dentro dos limites e não é uma parede)
+        if (0 <= new_x < width - RAT_IMAGE_SIZE[0]
+            and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
+            and maze[new_y // cell_size][new_x // cell_size] in (0, 3)):  # Permita 'c' (cheese) e '0' (vazio)
+            
+            new_coord = (new_x, new_y)
+            new_direction = (dx, dy)
+            
+            # Verifique se o movimento não foi feito anteriormente (coordenada e direção)
+            if (new_coord, new_direction) not in posicoes_rato:
+                possible_moves.append((new_coord, new_direction))
     
-    return posRatX, posRatY  # Não foi possível mover
+    if possible_moves:
+        # Embaralhe a lista de movimentos possíveis
+        import random
+        random.shuffle(possible_moves)
+        
+        # Escolha o primeiro movimento disponível
+        new_coord, new_direction = possible_moves[0]
+        new_x, new_y = new_coord
+        return new_x, new_y, new_direction  # Movimento possível, retornando a nova coordenada e direção
+    
+    if len(posicoes_rato) > 1:
+        # Remove a posição e a direção atuais da pilha
+        posicoes_rato.pop()
+        posRatX, posRatY, last_direction = posicoes_rato.pop()
+        return posRatX, posRatY, last_direction  # Retorna à posição e direção anterior
+    
+    return posRatX, posRatY, last_direction
+
 
 last_move_time = time.time()
 
 # Crie uma pilha vazia para armazenar as posições do rato
 posicoes_rato = deque()
 
+# Inicialize com uma direção padrão
+last_direction = (1, 0)
+posicoes_rato.append((posRatX, posRatY, last_direction))
+
+found_cheese = False  # Variável de controle
+message_display_time = None
+
+font = pygame.font.Font(None, 36)  # Defina a fonte e o tamanho
+text_color = 'red'  # Cor do texto
+
 while running:
+    # Limpe o fundo antes de desenhar
+    screen.fill(color)
+
     for i in range(n):
         for j in range(m):
             x = j * cell_size
@@ -102,13 +142,15 @@ while running:
                 screen.blit(pathImage, (x, y))
             elif maze[i][j] == 1:
                 screen.blit(wallImage, (x, y))
-    
+
     current_time = time.time()
-    
-    posicoes_rato.append((posRatX, posRatY))
-    
-    if current_time - last_move_time > 1:  # 1 segundo
-        posRatX, posRatY = move_rat(maze, posRatX, posRatY)
+
+    if current_time - last_move_time > 0.1 and not found_cheese:  # 0.1 segundo
+        posRatX, posRatY, last_direction = move_rat(maze, posRatX, posRatY, last_direction)
+        
+        # Adicione a nova posição e direção à pilha
+        posicoes_rato.append((posRatX, posRatY, last_direction))
+        
         last_move_time = current_time
 
     screen.blit(ratImage, (posRatX, posRatY))
@@ -120,6 +162,17 @@ while running:
             pygame.quit()
             quit()
 
-    pygame.display.update()
+ # Exibir uma mensagem se o queijo foi encontrado
+    if (posRatX, posRatY) == (posCheeseX, posCheeseY) and not found_cheese:
+        found_cheese = True
+        message_display_time = pygame.time.get_ticks()
 
-    screen.fill(color)
+    if message_display_time is not None:
+        current_ticks = pygame.time.get_ticks()
+        if current_ticks - message_display_time < 10000:  # Exibir por 10 segundos
+            message = font.render("Rato encontrou o queijo!", True, text_color)
+            screen.blit(message, (10, 10))
+        else:
+            message_display_time = None  # Ocultar a mensagem após 10 segundos
+
+    pygame.display.update()
