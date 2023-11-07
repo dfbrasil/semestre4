@@ -125,6 +125,8 @@ clock = pygame.time.Clock()  # Create a clock object
 
 maze = read_maze("maze.txt")  # Read the maze from a file
 
+running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

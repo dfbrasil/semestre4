@@ -75,6 +75,10 @@ running = True
 pygame.time.wait(100)
 pixels = cell_size  # Tamanho do movimento baseado na célula
 
+def mark_visited(maze, posRatX, posRatY):
+    # Marks a cell as visited.
+    maze[posRatX][posRatY] = "."
+
 def move_rat(maze, posRatX, posRatY, last_direction):
     # Lógica para mover o rato automaticamente
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
@@ -98,8 +102,8 @@ def move_rat(maze, posRatX, posRatY, last_direction):
     
     if possible_moves:
         # Embaralhe a lista de movimentos possíveis
-        import random
-        random.shuffle(possible_moves)
+        # import random
+        # random.shuffle(possible_moves)
         
         # Escolha o primeiro movimento disponível
         new_coord, new_direction = possible_moves[0]
@@ -145,7 +149,7 @@ while running:
 
     current_time = time.time()
 
-    if current_time - last_move_time > 0.05 and not found_cheese:  # 0.1 segundo
+    if current_time - last_move_time > 0.5 and not found_cheese:  # 0.1 segundo
         posRatX, posRatY, last_direction = move_rat(maze, posRatX, posRatY, last_direction)
         
         # Adicione a nova posição e direção à pilha
