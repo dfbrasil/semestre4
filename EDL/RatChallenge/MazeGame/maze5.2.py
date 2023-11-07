@@ -32,7 +32,7 @@ def load_maze_from_file(filename):
     m = len(maze[0])
     return maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY
 
-maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze2.txt')
+maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze.txt')
 
 cell_size = min(800 // m, 600 // n)
 width = m * cell_size
@@ -162,7 +162,6 @@ def get_possible_directions(maze, posRatX, posRatY):
         if maze[new_y // cell_size][new_x // cell_size] == 1:  # Parede
             possible_directions[i] = False
     
-    print(new_x,new_y)
 
     return possible_directions
 
@@ -188,6 +187,24 @@ def get_priority_directions(dx, dy):
 
     return priority_order[0]
 
+def get_valid_moves(posRatX, posRatY):
+    moves = []
+    for dx, dy in directions:
+        new_x = posRatX + dx * cell_size
+        new_y = posRatY + dy * cell_size
+        new_x_index = new_x // cell_size
+        new_y_index = new_y // cell_size
+
+        if (
+            0 <= new_x < width - RAT_IMAGE_SIZE[0]
+            and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
+            and maze[new_y_index][new_x_index] in (0, 3)
+            and not visited_cells[new_y_index][new_x_index]
+        ):
+            moves.append(((new_x, new_y), (dx, dy)))
+
+    return moves
+
 last_move_time = time.time()
 
 # Crie uma pilha vazia para armazenar as posições do rato
@@ -203,7 +220,6 @@ message_display_time = None
 font = pygame.font.Font(None, 36)  # Defina a fonte e o tamanho
 text_color = 'red'  # Cor do texto
 
-print(visited_cells)
 
 while running:
     # Limpe o fundo antes de desenhar
@@ -220,27 +236,17 @@ while running:
 
     current_time = time.time()
 
-    if current_time - last_move_time > 1 and not found_cheese:
-        possible_directions = get_possible_directions(maze, posRatX, posRatY)
+    if current_time - last_move_time > 0.5 and not found_cheese:
+        valid_moves = get_valid_moves(posRatX, posRatY)
 
-        # Encontre a próxima direção com base na prioridade e na célula visitada
-        next_direction = get_priority_directions(last_direction[0], last_direction[1])
-        dx, dy = next_direction
-        new_x = posRatX + dx * cell_size
-        new_y = posRatY + dy * cell_size
-        new_x_index = new_x // cell_size
-        new_y_index = new_y // cell_size
+        if valid_moves:
+            next_move, next_direction = valid_moves[0]
+            new_x, new_y = next_move
 
-        if (
-            0 <= new_x < width - RAT_IMAGE_SIZE[0]
-            and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
-            and maze[new_y_index][new_x_index] in (0, 3)
-            and not visited_cells[new_y_index][new_x_index]
-        ):
             # Atualize a posição e a direção
             posRatX = new_x
             posRatY = new_y
-            last_direction = (dx, dy)
+            last_direction = next_direction
 
             # Adicione a nova posição e direção à pilha
             posicoes_rato.append((posRatX, posRatY, last_direction))
@@ -248,31 +254,19 @@ while running:
             # Marque a célula como visitada
             mark_visited(maze, posRatX, posRatY)
         else:
-            # Encontre uma próxima direção válida que não tenha sido visitada
-            for direction in directions:
-                dx, dy = direction
-                new_x = posRatX + dx * cell_size
-                new_y = posRatY + dy * cell_size
-                new_x_index = new_x // cell_size
-                new_y_index = new_y // cell_size
+            if len(posicoes_rato) > 1:
+                # Remova o penúltimo movimento da pilha
+                posicoes_rato.pop()
 
-                if (
-                    0 <= new_x < width - RAT_IMAGE_SIZE[0]
-                    and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
-                    and maze[new_y_index][new_x_index] in (0, 3)
-                    and not visited_cells[new_y_index][new_x_index]
-                ):
-                    # Atualize a posição e a direção
-                    posRatX = new_x
-                    posRatY = new_y
-                    last_direction = (dx, dy)
+                # Recupere a última direção válida
+                last_x, last_y, last_direction = posicoes_rato[-1]
 
-                    # Adicione a nova posição e direção à pilha
-                    posicoes_rato.append((posRatX, posRatY, last_direction))
+                # Atualize a posição do rato
+                posRatX = last_x
+                posRatY = last_y
 
-                    # Marque a célula como visitada
-                    mark_visited(maze, posRatX, posRatY)
-                    break
+            # Marque a célula como visitada
+            mark_visited(maze, posRatX, posRatY)
 
         last_move_time = current_time
         
