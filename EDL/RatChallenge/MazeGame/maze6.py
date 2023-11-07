@@ -1,6 +1,5 @@
 import pygame
 import time
-from collections import deque
 
 pygame.init()
 
@@ -34,7 +33,7 @@ cell_size = min(800 // m, 600 // n)
 width = m * cell_size
 height = n * cell_size
 
-pygame.display.set_caption('Maze Hunter')
+pygame.display.set_caption('Cheese Hunter')
 
 Icon = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
 pygame.display.set_icon(Icon)
@@ -75,85 +74,35 @@ running = True
 pygame.time.wait(100)
 pixels = cell_size  # Tamanho do movimento baseado na célula
 
-# Defina a ordem de prioridade das direções
-direction_priority = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+def can_move(x, y):
+    return 0 <= x < m and 0 <= y < n and maze[y][x] != 1
 
-def move_rat(maze, posRatX, posRatY, last_direction, path_stack):
-    # Lógica para mover o rato automaticamente
-    possible_moves = []
-
-    # Verifique se o rato está na posição do queijo
-    if (posRatX, posRatY) == (posCheeseX, posCheeseY):
-        return posRatX, posRatY, last_direction
-
-    # Direções a serem consideradas: direita, esquerda, baixo, cima
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
+def move_rat(maze, posRatX, posRatY, path_stack):
+    # Direções possíveis em ordem de prioridade
+    directions = [(1, 0), (-1, 0), (0, -1), (0, 1)]
     for dx, dy in directions:
-        new_x = posRatX + dx * cell_size
-        new_y = posRatY + dy * cell_size
+        new_x = posRatX // cell_size + dx
+        new_y = posRatY // cell_size + dy
+        if can_move(new_x, new_y) and (new_x, new_y) not in path_stack:
+            path_stack.append((new_x, new_y))
+            return new_x * cell_size, new_y * cell_size
 
-        # Verifique se o movimento é válido (dentro dos limites e não é uma parede)
-        if (0 <= new_x < width - RAT_IMAGE_SIZE[0]
-            and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
-            and maze[new_y // cell_size][new_x // cell_size] in (0, 3)):  # Permita 'c' (cheese) e '0' (vazio)
+    if len(path_stack) > 1:
+        # Se não houver movimentos possíveis, volte um passo na pilha
+        path_stack.pop()  # Remove a posição atual
+        prev_x, prev_y = path_stack.pop()  # Volte para a posição anterior
+        return prev_x * cell_size, prev_y * cell_size
+    else:
+        return posRatX, posRatY
 
-            new_coord = (new_x, new_y)
-            new_direction = (dx, dy)
-
-            # Verifique se o movimento não foi feito anteriormente (coordenada e direção)
-            if (new_coord, new_direction) not in path_stack:
-                possible_moves.append((new_coord, new_direction))
-
-    if possible_moves:
-        # Escolha o primeiro movimento disponível
-        new_coord, new_direction = possible_moves[0]
-        new_x, new_y = new_coord
-
-        # Empilhe a posição atual e direção na pilha
-        path_stack.append((posRatX, posRatY, last_direction))
-        
-        return new_x, new_y, new_direction  # Movimento possível, retornando a nova coordenada e direção
-
-    if path_stack:
-        # Se a pilha não estiver vazia, desempilhe até encontrar um caminho válido
-        while path_stack:
-            prev_x, prev_y, prev_direction = path_stack.pop()
-            for dx, dy in directions:
-                new_x = prev_x + dx * cell_size
-                new_y = prev_y + dy * cell_size
-
-                # Verifique se o movimento é válido (dentro dos limites e não é uma parede)
-                if (0 <= new_x < width - RAT_IMAGE_SIZE[0]
-                    and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
-                    and maze[new_y // cell_size][new_x // cell_size] in (0, 3)):
-
-                    new_coord = (new_x, new_y)
-                    new_direction = (dx, dy)
-
-                    # Verifique se o movimento não foi feito anteriormente (coordenada e direção)
-                    if (new_coord, new_direction) not in path_stack:
-                        path_stack.append((prev_x, prev_y, prev_direction))  # Empilhe o caminho de volta
-                        return new_x, new_y, new_direction  # Retorne o novo caminho
-    return posRatX, posRatY, last_direction
-
-
+path_stack = [(posRatX // cell_size, posRatY // cell_size)]
 last_move_time = time.time()
-
-# Crie uma pilha vazia para armazenar as posições do rato
-posicoes_rato = deque()
-
-# Inicialize com uma direção padrão
-last_direction = (1, 0)
-posicoes_rato.append((posRatX, posRatY, last_direction))
-
-found_cheese = False  # Variável de controle
-message_display_time = None
+found_cheese = False
 
 font = pygame.font.Font(None, 36)  # Defina a fonte e o tamanho
 text_color = 'red'  # Cor do texto
 
-path_stack = []
+message_display_time = None
 
 while running:
     # Limpe o fundo antes de desenhar
@@ -171,12 +120,11 @@ while running:
     current_time = time.time()
 
     if current_time - last_move_time > 0.1 and not found_cheese:  # 0.1 segundo
-        posRatX, posRatY, last_direction = move_rat(maze, posRatX, posRatY, last_direction, path_stack)
-        
+        posRatX, posRatY = move_rat(maze, posRatX, posRatY, path_stack)
         last_move_time = current_time
 
-    screen.blit(ratImage, (posRatX, posRatY))
     screen.blit(cheeseImage, (posCheeseX, posCheeseY))
+    screen.blit(ratImage, (posRatX, posRatY))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

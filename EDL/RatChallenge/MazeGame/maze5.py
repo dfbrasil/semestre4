@@ -28,7 +28,7 @@ def load_maze_from_file(filename):
     m = len(maze[0])
     return maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY
 
-maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze.txt')
+maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze2.txt')
 
 cell_size = min(800 // m, 600 // n)
 width = m * cell_size
@@ -145,7 +145,7 @@ while running:
 
     current_time = time.time()
 
-    if current_time - last_move_time > 0.1 and not found_cheese:  # 0.1 segundo
+    if current_time - last_move_time > 0.05 and not found_cheese:  # 0.1 segundo
         posRatX, posRatY, last_direction = move_rat(maze, posRatX, posRatY, last_direction)
         
         # Adicione a nova posição e direção à pilha
