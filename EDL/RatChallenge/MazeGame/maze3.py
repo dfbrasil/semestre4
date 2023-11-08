@@ -91,7 +91,7 @@ def move_rat(maze, posRatX, posRatY):
 last_move_time = time.time()
 
 # Crie uma pilha vazia para armazenar as posições do rato
-posicoes_rato = deque()
+rat_positions = deque()
 
 while running:
     for i in range(n):
@@ -105,7 +105,7 @@ while running:
     
     current_time = time.time()
     
-    posicoes_rato.append((posRatX, posRatY))
+    rat_positions.append((posRatX, posRatY))
     
     if current_time - last_move_time > 1:  # 1 segundo
         posRatX, posRatY = move_rat(maze, posRatX, posRatY)

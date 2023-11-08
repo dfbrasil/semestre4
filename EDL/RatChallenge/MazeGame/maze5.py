@@ -97,7 +97,7 @@ def move_rat(maze, posRatX, posRatY, last_direction):
             new_direction = (dx, dy)
             
             # Verifique se o movimento não foi feito anteriormente (coordenada e direção)
-            if (new_coord, new_direction) not in posicoes_rato:
+            if (new_coord, new_direction) not in rat_positions:
                 possible_moves.append((new_coord, new_direction))
     
     if possible_moves:
@@ -110,10 +110,10 @@ def move_rat(maze, posRatX, posRatY, last_direction):
         new_x, new_y = new_coord
         return new_x, new_y, new_direction  # Movimento possível, retornando a nova coordenada e direção
     
-    if len(posicoes_rato) > 1:
+    if len(rat_positions) > 1:
         # Remove a posição e a direção atuais da pilha
-        posicoes_rato.pop()
-        posRatX, posRatY, last_direction = posicoes_rato.pop()
+        rat_positions.pop()
+        posRatX, posRatY, last_direction = rat_positions.pop()
         return posRatX, posRatY, last_direction  # Retorna à posição e direção anterior
     
     return posRatX, posRatY, last_direction
@@ -122,11 +122,11 @@ def move_rat(maze, posRatX, posRatY, last_direction):
 last_move_time = time.time()
 
 # Crie uma pilha vazia para armazenar as posições do rato
-posicoes_rato = deque()
+rat_positions = deque()
 
 # Inicialize com uma direção padrão
 last_direction = (1, 0)
-posicoes_rato.append((posRatX, posRatY, last_direction))
+rat_positions.append((posRatX, posRatY, last_direction))
 
 found_cheese = False  # Variável de controle
 message_display_time = None
@@ -153,7 +153,7 @@ while running:
         posRatX, posRatY, last_direction = move_rat(maze, posRatX, posRatY, last_direction)
         
         # Adicione a nova posição e direção à pilha
-        posicoes_rato.append((posRatX, posRatY, last_direction))
+        rat_positions.append((posRatX, posRatY, last_direction))
         
         last_move_time = current_time
 

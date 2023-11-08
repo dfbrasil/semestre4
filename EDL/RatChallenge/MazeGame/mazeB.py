@@ -1,115 +1,282 @@
 import pygame
-import random
+import time
+from collections import deque
 
-# Constantes
-WIDTH = 800
-HEIGHT = 600
-LIMITE_TEMPO = 10
-
-# Inicializa o Pygame
 pygame.init()
 
-# Cria a tela
-tela = pygame.display.set_mode((WIDTH, HEIGHT))
+directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
-# Carrega as imagens
-parede = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/wall.png')
-rato = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
-queijo = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/cheese.png')
+def load_maze_from_file(filename):
+    maze = []
+    posRatX, posRatY = 0, 0
+    posCheeseX, posCheeseY = 0, 0
 
-# Cria o labirinto
-labirinto = []
-for i in range(HEIGHT):
-    linha = []
-    for j in range(WIDTH):
-        if i % 2 == 0 and j % 2 == 0:
-            linha.append(parede)
+    with open(filename, 'r') as file:
+        for i, line in enumerate(file):
+            row = []
+            for j, char in enumerate(line.strip()):
+                if char == '0':
+                    row.append(0)
+                elif char == '1':
+                    row.append(1)
+                elif char == 'm':
+                    row.append(2)
+                    posRatX, posRatY = j, i
+                elif char == 'c':
+                    row.append(3)
+                    posCheeseX, posCheeseY = j, i
+            maze.append(row)
+    h = len(maze)
+    w = len(maze[0])
+    return maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY
+
+maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze.txt')
+
+cell_size = min(1200 // w, 720 // h)
+width = w * cell_size
+height = h * cell_size
+
+pygame.display.set_caption('Maze Hunter')
+
+Icon = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
+pygame.display.set_icon(Icon)
+
+size = (width, height)
+screen = pygame.display.set_mode(size)
+
+# background screen color
+color = (255, 255, 255)
+
+ratImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
+cheeseImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/cheese.png')
+# pathImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/path.jpg')
+wallImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/wall.png')
+
+RAT_IMAGE_SIZE = (cell_size, cell_size)
+CHEESE_IMAGE_SIZE = (cell_size, cell_size)
+PATH_IMAGE_SIZE = (cell_size, cell_size)
+WALL_IMAGE_SIZE = (cell_size, cell_size)
+
+# Redimensione a imagem para o tamanho necessário
+ratImage = pygame.transform.scale(ratImage, RAT_IMAGE_SIZE)
+cheeseImage = pygame.transform.scale(cheeseImage, CHEESE_IMAGE_SIZE)
+# pathImage = pygame.transform.scale(pathImage, PATH_IMAGE_SIZE)
+wallImage = pygame.transform.scale(wallImage, WALL_IMAGE_SIZE)
+
+# Inicialize as posições iniciais
+posRatX = posRatX * cell_size
+posRatY = posRatY * cell_size
+posCheeseX = posCheeseX * cell_size
+posCheeseY = posCheeseY * cell_size
+
+RAT_POSITION = (posRatX, posRatY)
+CHEESE_POSITION = (posCheeseX, posCheeseY)
+
+running = True
+
+pygame.time.wait(100)
+pixels = cell_size  # Tamanho do movimento baseado na célula
+
+visited_cells = [[False] * w for _ in range(h)]
+
+def mark_visited(maze, posRatX, posRatY):
+    # Marca a célula como visitada e retorna True
+    visited_cells[posRatY // cell_size][posRatX // cell_size] = True
+    return True
+
+def clear_previous_movement(maze, rat_positions):
+    # Remove a marcação de células visitadas durante o movimento anterior
+    if len(rat_positions) > 1:
+        prev_x, prev_y, _ = rat_positions[-2]
+        current_x, current_y, _ = rat_positions[-1]
+        maze[prev_y // cell_size][prev_x // cell_size] = 0  # Marca a célula anterior como não visitada
+
+def move_rat(maze, posRatX, posRatY, last_direction):
+    # Lógica para mover o rato automaticamente
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    possible_moves = []
+
+    for dx, dy in directions:
+        new_x = posRatX + dx * cell_size
+        new_y = posRatY + dy * cell_size
+
+        # Verifique se o movimento é válido (dentro dos limites e não é uma parede)
+        if (
+            0 <= new_x < width - RAT_IMAGE_SIZE[0]
+            and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
+            and maze[new_y // cell_size][new_x // cell_size] in (0, 3)
+        ):  # Permita 'c' (cheese) e '0' (vazio)
+            new_coord = (new_x, new_y)
+            new_direction = (dx, dy)
+
+            # Verifique se o movimento não foi feito anteriormente (coordenada e direção)
+            if (new_coord, new_direction) not in rat_positions:
+                possible_moves.append((new_coord, new_direction))
+
+    if possible_moves:
+        # Escolha o primeiro movimento disponível
+        new_coord, new_direction = possible_moves[0]
+        new_x, new_y = new_coord
+        return new_x, new_y, new_direction  # Movimento possível, retornando a nova coordenada e direção
+
+    if len(rat_positions) > 1:
+        while len(rat_positions) > 1:
+            # Comece a desempilhar a pilha e procurar por direções não visitadas
+            clear_previous_movement(maze, rat_positions)
+            posRatX, posRatY, last_direction = rat_positions.pop()
+            visited_cells[posRatY // cell_size][posRatX // cell_size] = False
+
+            for direction in directions:
+                dx, dy = direction
+                new_x = posRatX + dx * cell_size
+                new_y = posRatY + dy * cell_size
+                new_x_index = new_x // cell_size
+                new_y_index = new_y // cell_size
+
+                if (
+                    0 <= new_x < width - RAT_IMAGE_SIZE[0]
+                    and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
+                    and maze[new_y_index][new_x_index] in (0, 3)
+                    and not visited_cells[new_y_index][new_x_index]
+                ):
+                    # Encontre uma próxima direção válida que não tenha sido visitada
+                    return posRatX + dx * cell_size, posRatY + dy * cell_size, (dx, dy)
+
+    return posRatX, posRatY, last_direction
+
+def get_possible_directions(maze, posRatX, posRatY):
+    # Lógica para verificar as direções possíveis
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    possible_directions = [True] * len(directions)
+
+    for i, (dx, dy) in enumerate(directions):
+        new_x = posRatX + dx * cell_size
+        new_y = posRatY + dy * cell_size
+
+        # Verifique se o movimento é válido (dentro dos limites e não é uma parede)
+        if not (0 <= new_x < width - RAT_IMAGE_SIZE[0] and 0 <= new_y < height - RAT_IMAGE_SIZE[1]):
+            possible_directions[i] = False
+        if maze[new_y // cell_size][new_x // cell_size] == 1:  # Parede
+            possible_directions[i] = False
+    
+    return possible_directions
+
+def get_valid_moves(posRatX, posRatY):
+    moves = []
+    for dx, dy in directions:
+        new_x = posRatX + dx * cell_size
+        new_y = posRatY + dy * cell_size
+        new_x_index = new_x // cell_size
+        new_y_index = new_y // cell_size
+
+        if (
+            0 <= new_x < width - RAT_IMAGE_SIZE[0]
+            and 0 <= new_y < height - RAT_IMAGE_SIZE[1]
+            and maze[new_y_index][new_x_index] in (0, 3)
+            and not visited_cells[new_y_index][new_x_index]
+        ):
+            moves.append(((new_x, new_y), (dx, dy)))
+
+    return moves
+
+last_move_time = time.time()
+
+# Crie uma pilha vazia para armazenar as posições do rato
+rat_positions = deque()
+
+# Crie uma lista para armazenar as coordenadas corretas do caminho do rato
+correct_path = []
+
+# Inicialize com uma direção padrão
+last_direction = (1, 0)
+rat_positions.append((posRatX, posRatY, last_direction))
+
+found_cheese = False  # Variável de controle
+message_display_time = None
+
+font = pygame.font.Font(None, 36)  # Defina a fonte e o tamanho
+text_color = 'red'  # Cor do texto
+
+while running:
+    # Limpe o fundo antes de desenhar
+    screen.fill(color)
+
+    for i in range(h):
+        for j in range(w):
+            x = j * cell_size
+            y = i * cell_size
+            if maze[i][j] == 1:
+                screen.blit(wallImage, (x, y))
+
+    current_time = time.time()
+
+    if current_time - last_move_time > 0.05 and not found_cheese:
+        valid_moves = get_valid_moves(posRatX, posRatY)
+
+        if valid_moves:
+            next_move, next_direction = valid_moves[0]
+            new_x, new_y = next_move
+
+            # Adicione a nova posição à lista de coordenadas corretas
+            correct_path.append((posRatX, posRatY))
+
+            # Atualize a posição e a direção
+            posRatX = new_x
+            posRatY = new_y
+            last_direction = next_direction
+
+            # Adicione a nova posição e direção à pilha
+            rat_positions.append((posRatX, posRatY, last_direction))
+
+            # Marque a célula como visitada
+            mark_visited(maze, posRatX, posRatY)
         else:
-            linha.append(None)
-    labirinto.append(linha)
+            if len(rat_positions) > 1:
+                # Remova o penúltimo movimento da pilha
+                rat_positions.pop()
 
-# Posiciona o rato no início do labirinto
-rato_x = 0
-rato_y = 0
+                # Recupere a última direção válida
+                last_x, last_y, last_direction = rat_positions[-1]
 
-# Pilha para armazenar os passos do rato
-pilha = []
+                # Atualize a posição do rato
+                posRatX = last_x
+                posRatY = last_y
 
-# Lista para armazenar os passos já dados pelo rato
-passos_dados = []
+                # Adicione a nova posição à lista de coordenadas corretas
+                correct_path.append((posRatX, posRatY))
 
-# Contador do tempo
-tempo = 0
+            # Marque a célula como visitada
+            mark_visited(maze, posRatX, posRatY)
 
-direcoes = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        last_move_time = current_time
 
-# Loop principal
-while True:
-    # Limpa a tela
-    tela.fill((0, 0, 0))
+    screen.blit(ratImage, (posRatX, posRatY))
+    screen.blit(cheeseImage, (posCheeseX, posCheeseY))
 
-    # Desenha o labirinto
-    for i in range(HEIGHT):
-        for j in range(WIDTH):
-            if labirinto[i][j] is not None:
-                tela.blit(labirinto[i][j], (j * 50, i * 50))
-
-    # Desenha o rato
-    tela.blit(rato, (rato_x * 50, rato_y * 50))
-
-    # Verifica se o rato encontrou o queijo
-    if labirinto[rato_y][rato_x] == queijo:
-        print("O rato encontrou o queijo!")
-        break
-
-    # Verifica se o tempo limite foi atingido
-    # if tempo >= LIMITE_TEMPO:
-    #     print("O rato não encontrou o queijo a tempo!")
-    #     break
-
-    # Verifica se o rato está em uma parede
-    if labirinto[rato_y][rato_x] is not None:
-        # O rato está em uma parede, então ele deve retornar pelo caminho da pilha
-        if len(pilha) > 0:
-            # Pega o último passo da pilha
-            passo = pilha.pop()
-
-            # Atualiza a posição do rato
-            rato_x = passo[0]
-            rato_y = passo[1]
-
-    # Verifica o próximo passo possível do rato
-    passo_possivel = False
-    for i in range(4):
-        nova_x = rato_x + direcoes[i][0]
-        nova_y = rato_y + direcoes[i][1]
-
-        # Verifica se o passo é possível
-        if 0 <= nova_x < WIDTH and 0 <= nova_y < HEIGHT and labirinto[nova_y][nova_x] is None:
-            # Verifica se o passo já foi dado
-            if (nova_x, nova_y) not in passos_dados:
-                # O passo é possível e não foi dado antes
-                passo_possivel = True
-                passo = (nova_x, nova_y)
-                break
-
-    # Se houver um passo possível, o rato avança
-    if passo_possivel:
-        # Empilha o passo atual
-        pilha.append((rato_x, rato_y))
-
-        # Atualiza a posição do rato
-        rato_x = passo[0]
-        rato_y = passo[1]
-        passos_dados.append((rato_x, rato_y))
-
-    # Atualiza o contador do tempo
-    tempo += 1
-
-    # Atualiza a tela
-    pygame.display.update()
-
-    # Verifica se o usuário fechou a janela
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit
+            running = False
+            pygame.quit()
+            quit()
+
+    # Exibir uma mensagem se o queijo foi encontrado
+    if (posRatX, posRatY) == (posCheeseX, posCheeseY) and not found_cheese:
+        found_cheese = True
+        message_display_time = pygame.time.get_ticks()
+
+    if message_display_time is not None:
+        current_ticks = pygame.time.get_ticks()
+        if current_ticks - message_display_time < 10000:  # Exibir por 10 segundos
+            message = font.render("Rato encontrou o queijo!", True, text_color)
+            screen.blit(message, (0, 0))
+            for x, y in correct_path:
+                pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(x, y, cell_size, cell_size))
+                
+            file_path = '/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/right_way.txt'
+            with open(file_path, 'w') as file:
+                for x, y in correct_path:
+                    file.write(f"{x},{y}\n")
+        else:
+            message_display_time = None  # Ocultar a mensagem após 10 segundos
+    
+    pygame.display.update()

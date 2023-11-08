@@ -1,4 +1,3 @@
-#deletar o penultimo ponto da lista caso o rato não tenha mais para onde ir posições_rato
 
 import pygame
 import time
@@ -32,9 +31,9 @@ def load_maze_from_file(filename):
     m = len(maze[0])
     return maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY
 
-maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze.txt')
+maze, n, m, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze_large.txt')
 
-cell_size = min(800 // m, 600 // n)
+cell_size = min(1200 // m, 720 // n)
 width = m * cell_size
 height = n * cell_size
 
@@ -54,10 +53,10 @@ cheeseImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/E
 pathImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/path.jpg')
 wallImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/wall.png')
 
-RAT_IMAGE_SIZE = (40, 40)
-CHEESE_IMAGE_SIZE = (40, 40)
-PATH_IMAGE_SIZE = (50, 50)
-WALL_IMAGE_SIZE = (50, 50)
+RAT_IMAGE_SIZE = (cell_size, cell_size)
+CHEESE_IMAGE_SIZE = (cell_size, cell_size)
+PATH_IMAGE_SIZE = (cell_size, cell_size)
+WALL_IMAGE_SIZE = (cell_size, cell_size)
 
 # Redimensione a imagem para o tamanho necessário
 ratImage = pygame.transform.scale(ratImage, RAT_IMAGE_SIZE)
@@ -87,11 +86,11 @@ def mark_visited(maze, posRatX, posRatY):
     return True
 
     
-def clear_previous_movement(maze, posicoes_rato):
+def clear_previous_movement(maze, rat_positions):
     # Remove a marcação de células visitadas durante o movimento anterior
-    if len(posicoes_rato) > 1:
-        prev_x, prev_y, _ = posicoes_rato[-2]
-        current_x, current_y, _ = posicoes_rato[-1]
+    if len(rat_positions) > 1:
+        prev_x, prev_y, _ = rat_positions[-2]
+        current_x, current_y, _ = rat_positions[-1]
         maze[prev_y // cell_size][prev_x // cell_size] = 0  # Marca a célula anterior como não visitada
 
 def move_rat(maze, posRatX, posRatY, last_direction):
@@ -113,7 +112,7 @@ def move_rat(maze, posRatX, posRatY, last_direction):
             new_direction = (dx, dy)
 
             # Verifique se o movimento não foi feito anteriormente (coordenada e direção)
-            if (new_coord, new_direction) not in posicoes_rato:
+            if (new_coord, new_direction) not in rat_positions:
                 possible_moves.append((new_coord, new_direction))
 
     if possible_moves:
@@ -122,11 +121,11 @@ def move_rat(maze, posRatX, posRatY, last_direction):
         new_x, new_y = new_coord
         return new_x, new_y, new_direction  # Movimento possível, retornando a nova coordenada e direção
     
-    if len(posicoes_rato) > 1:
-        while len(posicoes_rato) > 1:
+    if len(rat_positions) > 1:
+        while len(rat_positions) > 1:
             # Comece a desempilhar a pilha e procurar por direções não visitadas
-            clear_previous_movement(maze, posicoes_rato)
-            posRatX, posRatY, last_direction = posicoes_rato.pop()
+            clear_previous_movement(maze, rat_positions)
+            posRatX, posRatY, last_direction = rat_positions.pop()
             visited_cells[posRatY // cell_size][posRatX // cell_size] = False
 
             for direction in directions:
@@ -208,11 +207,11 @@ def get_valid_moves(posRatX, posRatY):
 last_move_time = time.time()
 
 # Crie uma pilha vazia para armazenar as posições do rato
-posicoes_rato = deque()
+rat_positions = deque()
 
 # Inicialize com uma direção padrão
 last_direction = (1, 0)
-posicoes_rato.append((posRatX, posRatY, last_direction))
+rat_positions.append((posRatX, posRatY, last_direction))
 
 found_cheese = False  # Variável de controle
 message_display_time = None
@@ -236,7 +235,7 @@ while running:
 
     current_time = time.time()
 
-    if current_time - last_move_time > 0.5 and not found_cheese:
+    if current_time - last_move_time > 0.05 and not found_cheese:
         valid_moves = get_valid_moves(posRatX, posRatY)
 
         if valid_moves:
@@ -249,17 +248,17 @@ while running:
             last_direction = next_direction
 
             # Adicione a nova posição e direção à pilha
-            posicoes_rato.append((posRatX, posRatY, last_direction))
+            rat_positions.append((posRatX, posRatY, last_direction))
 
             # Marque a célula como visitada
             mark_visited(maze, posRatX, posRatY)
         else:
-            if len(posicoes_rato) > 1:
+            if len(rat_positions) > 1:
                 # Remova o penúltimo movimento da pilha
-                posicoes_rato.pop()
+                rat_positions.pop()
 
                 # Recupere a última direção válida
-                last_x, last_y, last_direction = posicoes_rato[-1]
+                last_x, last_y, last_direction = rat_positions[-1]
 
                 # Atualize a posição do rato
                 posRatX = last_x
