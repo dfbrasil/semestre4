@@ -188,8 +188,10 @@ while running:
         if current_ticks - message_display_time < 10000:  # Exibir por 10 segundos
             message = font.render("Rato encontrou o queijo!", True, text_color)
             screen.blit(message, (0, 0))
-            for x, y, _ in rat_positions:
+            for x, y in correct_path:
                 pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(x, y, cell_size, cell_size))
+            for x, y, _ in rat_positions:
+                pygame.draw.rect(screen, (0, 0, 255), pygame.Rect(x, y, cell_size, cell_size))
                 
             file_path = '/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/right_way.txt'
             with open(file_path, 'w') as file:
