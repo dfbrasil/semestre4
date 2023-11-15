@@ -49,7 +49,7 @@ size = (width, height)
 screen = pygame.display.set_mode(size)
 
 # Cor de fundo da tela
-color = (0, 0, 0)
+color = (255, 255, 255)
 
 # Carregar as imagens do rato, queijo e parede
 ratImage = pygame.image.load('/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/images/rat.png')
