@@ -35,7 +35,7 @@ def load_maze_from_file(filename):
     return maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY
 
 #carrega as variáveis e o labirinto à partir do arquivo
-maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze.txt')
+maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze_large.txt')
 
 #redimensionamento das células baseado na resolução da tela
 cell_size = min(1200 // w, 720 // h)
