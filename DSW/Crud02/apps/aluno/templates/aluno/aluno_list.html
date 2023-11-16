@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for aluno in object_list %}
+     <a href="{% url 'aluno_detail' aluno.pk %}">
+        {{ aluno }}
+    </a><br>
+    {% endfor %}
+   
+    <a href="{% url 'aluno_create' %}">NOVO</a>
+</body>
+</html>
