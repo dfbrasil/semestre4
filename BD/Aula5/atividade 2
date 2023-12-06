@@ -1,0 +1,66 @@
+CREATE DATABASE AtividadeSQL;
+
+CREATE TABLE IF NOT EXISTS Aluno(
+	id_aluno INT NOT NULL,
+	nome VARCHAR(20) NOT NULL,
+	idade INT,
+	sexo CHAR(1),
+	matricula_aluno INT NOT NULL,
+	sobrenome VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Disciplina(
+	id_disciplina INT NOT NULL,
+	professor VARCHAR(20) NOT NULL
+);
+
+ALTER TABLE aluno
+ADD turma VARCHAR(50);
+
+ALTER TABLE disciplina
+ADD carga_horaria INT;
+
+INSERT INTO Aluno(id_aluno, nome, idade, sexo, matricula_aluno, sobrenome, turma)
+VALUES(1, 'Aluno1', 11, 'M', 101, 'Sobrenome1', 'ADS1');
+
+INSERT INTO Aluno(id_aluno, nome, idade, sexo, matricula_aluno, sobrenome, turma)
+VALUES(2, 'Aluno2', 12, 'F', 102, 'Sobrenome2', 'ADS2');
+
+INSERT INTO Aluno(id_aluno, nome, idade, sexo, matricula_aluno, sobrenome, turma)
+VALUES(3, 'Aluno3', 13, 'M', 103, 'Sobrenome3', 'ADS1');
+
+INSERT INTO Aluno(id_aluno, nome, idade, sexo, matricula_aluno, sobrenome, turma)
+VALUES(4, 'Aluno4', 14, 'F', 104, 'Sobrenome4', 'ADS2');
+
+INSERT INTO Aluno(id_aluno, nome, idade, sexo, matricula_aluno, sobrenome, turma)
+VALUES(5, 'Aluno5', 15, 'M', 105, 'Sobrenome5', 'ADS1');
+
+INSERT INTO Aluno(id_aluno, nome, idade, sexo, matricula_aluno, sobrenome, turma)
+VALUES(6, 'Aluno6', 16, 'F', 106, 'Sobrenome6', 'ADS2');
+
+INSERT INTO disciplina (id_disciplina, professor, carga_horaria)
+VALUES (1, 'Professor1' , 11);
+
+INSERT INTO disciplina (id_disciplina, professor, carga_horaria)
+VALUES (2, 'Professor2' , 12);
+
+INSERT INTO disciplina (id_disciplina, professor, carga_horaria)
+VALUES (3, 'Professor3' , 13);
+
+INSERT INTO disciplina (id_disciplina, professor, carga_horaria)
+VALUES (4, 'Professor4' , 14);
+
+
+SELECT nome, sobrenome FROM Aluno WHERE sexo='M';
+
+SELECT carga_horaria FROM disciplina;
+
+UPDATE disciplina SET carga_horaria = 40;
+
+SELECT carga_horaria FROM disciplina;
+
+SELECT * FROM Aluno WHERE turma='ADS1';
+
+DELETE FROM aluno WHERE turma='ADS1';
+
+SELECT * FROM Aluno;

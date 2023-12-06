@@ -33,7 +33,7 @@ def load_maze_from_file(filename):
     w = len(maze[0])
     return maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY
 
-maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('m5.txt')
+maze, h, w, posRatX, posRatY, posCheeseX, posCheeseY = load_maze_from_file('maze_large.txt')
 
 cell_size = min(1200 // w, 720 // h)
 width = w * cell_size
@@ -190,8 +190,6 @@ while running:
             screen.blit(message, (0, 0))
             for x, y in correct_path:
                 pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(x, y, cell_size, cell_size))
-            for x, y, _ in rat_positions:
-                pygame.draw.rect(screen, (0, 0, 255), pygame.Rect(x, y, cell_size, cell_size))
                 
             file_path = '/home/danieldfb/Repositório - NOVO/semestre4/EDL/RatChallenge/MazeGame/right_way.txt'
             with open(file_path, 'w') as file:
