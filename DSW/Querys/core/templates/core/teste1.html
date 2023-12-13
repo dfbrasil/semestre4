@@ -6,28 +6,69 @@
 <body>
     <h1>Query Examples</h1>
 
-    <h2>Books by Title</h2>
-    {% for book in books_by_title %}
-        <p>{{ book.title }}</p>
-    {% endfor %}
-
-    <h2>Authors by Name</h2>
-    {% for author in authors_by_name %}
-        <p>{{ author.name }}</p>
-    {% endfor %}
-
-    <h2>Books with Specific Tag</h2>
-    {% for book in books_with_tag %}
-        <p>{{ book.title }}</p>
-    {% endfor %}
-
-    <h2>Books of a Specific Author</h2>
+    <h2>Filtrar Livros por Autor</h2>
     {% for book in books_of_author %}
         <p>{{ book.title }}</p>
     {% endfor %}
 
-    <h2>Number of Books by a Specific Author</h2>
-    <p>{{ num_books_of_author }}</p>
+    <h2>Buscar Livros com Tags Específicas</h2>
+    {% for book in books_with_tag %}
+        <p>{{ book.title }}</p>
+    {% endfor %}
 
+    <h2>Listar Autores com Biografias Específicas</h2>
+    {% for author in authors_with_bio %}
+        <p>{{ author.name }}</p>
+    {% endfor %}
+
+    <h2>Livros com Avaliações Altas</h2>
+    {% for book in high_level_books %}
+        <p>{{ book.title }}</p>
+    {% endfor %}
+
+    <h2>Perfil de Usuários com Websites Específicos</h2>
+    {% for profile in users_websites %}
+        <p>{{ profile.user }}</p>
+    {% endfor %}
+
+    <h2>Listar Livros sem Avaliações</h2>
+    {% if books_without_reviews %}
+        {% for book in books_without_reviews %}
+            <p>{{ book.title }}</p>
+        {% endfor %}
+    {% else %}
+        <p>Todos os livros foram analisados.</p>
+    {% endif %}
+
+    <h2>Autores com Maior Número de Livros</h2>
+    {% for author in authors_with_more_books %}
+        <p>{{ author.name }}, Número de Livros:{{author.num_books}}</p>
+    {% endfor %}
+
+    <h2>Livros com Resumos Longos</h2>
+    {% if long_summary_books %}
+        {% for book in long_summary_books %}
+            <p>{{ book.title }}</p>
+        {% endfor %}
+    {% else %}
+        <p>Não há livros com resumos com mais de 150 palavras.</p>
+    {% endif %}
+
+    <h2>Avaliações de Livros de um Autor Específico</h2>
+    {% for review in reviews_of_author_books %}
+        <p>{{ review.book.title }}</p>
+    {% endfor %}
+
+    <h2>Livors com Múltiplas Tags</h2>
+    {% for book in books_with_multiple_tags %}
+        <p>{{ book.title }} - Tags: 
+            {% for tag in book.tags.all %}
+                {{ tag.name }}
+                    {% if not forloop.last %}
+                        , 
+                    {% endif %}
+            {% endfor %}</p>
+    {% endfor %}
+    
 </body>
 </html>
