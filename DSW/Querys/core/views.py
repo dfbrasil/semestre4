@@ -46,8 +46,10 @@ def query_examples(request):
     
     #Consultas de Livros com Múltiplas Tags
     books_with_multiple_tags = Book.objects.annotate(num_tags=Count('tags')).filter(num_tags__gt=1)
-
-
+    
+    #Consulta de Avaliações com Avaliações mais altas ou iguais a 4
+    rated_reviews = Review.objects.filter(rating__gte=4)
+    
     # Envie todas as consultas para o template
     context = {
         'books_by_title': books_by_title,
@@ -63,6 +65,7 @@ def query_examples(request):
         'long_summary_books': long_summary_books,
         'reviews_of_author_books': reviews_of_author_books,
         'books_with_multiple_tags': books_with_multiple_tags,
+        'rated_reviews': rated_reviews,
     }
 
     return render(request, 'core/teste1.html', context)
