@@ -29,13 +29,15 @@ def main():
     insere(tabela, 10)
 
     # Exemplo de busca
-    chave = 10
+    chave = 8
     posicao = busca_hash(tabela, chave)
 
     if posicao != -1:
         print(f"Chave {chave} encontrada na posição {posicao}")
     else:
         print(f"Chave {chave} não encontrada na tabela hash.")
+        
+    print(tabela)
 
 if __name__ == "__main__":
     main()
