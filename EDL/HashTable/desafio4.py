@@ -24,7 +24,7 @@ while(True):
         credencial = choice(credenciais)
         nivel_acesso = choice(niveis_acesso)
         
-        hash_table[id_credencial].append((id_credencial, credencial, nivel_acesso))
+        hash_table[id_credencial] = [id_credencial, credencial, nivel_acesso]
         
     elif opcao == 2:
         if len(hash_table)>0:
@@ -55,9 +55,9 @@ while(True):
         print("Digite o ID da credencial:")
         id_cred = int(input())
         if id_cred in hash_table:
-            print("Digite a nova leitura do sensor:")
-            nova_cred = float(input())
-            hash_table[id_cred][-1] = (hash_table[id_cred][-1][0], nova_cred)
+            credencial = choice(credenciais)
+            nivel_acesso = choice(niveis_acesso)
+            hash_table[id_cred] = [id_cred, credencial, nivel_acesso]
         else:
             print("ID da credencial inválida")
     else:

@@ -16,10 +16,10 @@ while(True):
         print("Digite a leitura do sensor:")
         leitura = float(input())
 
-        if id_sensor not in hash_table:
-            hash_table[id_sensor] = []
+        # if id_sensor not in hash_table:
+        #     hash_table[id_sensor] = []
             
-        hash_table[id_sensor].append((id_sensor, leitura))
+        hash_table[id_sensor] =[id_sensor, leitura]
 
     elif opcao == 2:
         if len(hash_table)>0:
@@ -50,7 +50,7 @@ while(True):
         if id_sensor in hash_table:
             print("Digite a nova leitura do sensor:")
             nova_leitura = float(input())
-            hash_table[id_sensor][-1] = (hash_table[id_sensor][-1][0], nova_leitura)
+            hash_table[id_sensor] = [nova_leitura]
         else:
             print("ID do Sensor inválido")
     else:
