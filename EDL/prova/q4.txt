@@ -1,0 +1,6 @@
+Quando se utiliza tabelas Hash, pode ocorrer colisão. Explique o que é uma colisão e como resolver esse problema.
+
+Uma colisão ocorre quando mais de um elemento tem a mesma posição de ID após uma funçaõ de tabela hash ser aplicada. O que pode levar a conflitos e problemas de leitura e escrita de valores associados a chaves.
+
+Uma das forma de resolver esse problema é utilizando uma lista encadeada para armazenar os elementos que colidiram. Neste caso cada posição da tabela hash contém uma lista que armazena todos os elementos que foram mapeadas para essa posição. Quando ocorre uma colisão, os elementos são simplesmente adicionados à lista correspondente à posição de índice. 
+Os valores associacos ao mesmo índice são então adicionados à lista e a busca por um valor associado a procura na lista correspondente à posição de índice.
